@@ -48,6 +48,8 @@ class DragAndDropList implements DragAndDropListInterface {
   /// Set to false if it must remain fixed.
   final bool canDrag;
 
+  ///set board height
+  final double? boardHeight;
   DragAndDropList({
     required this.children,
     this.header,
@@ -57,6 +59,7 @@ class DragAndDropList implements DragAndDropListInterface {
     this.contentsWhenEmpty,
     this.lastTarget,
     this.decoration,
+    this.boardHeight,
     this.horizontalAlignment = MainAxisAlignment.start,
     this.verticalAlignment = CrossAxisAlignment.start,
     this.canDrag = true,
@@ -68,12 +71,15 @@ class DragAndDropList implements DragAndDropListInterface {
     if (header != null) {
       contents.add(Flexible(child: header!));
     }
-    Widget intrinsicHeight = IntrinsicHeight(
-      child: Row(
-        mainAxisAlignment: horizontalAlignment,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _generateDragAndDropListInnerContents(params),
+    Widget intrinsicHeight = SingleChildScrollView(
+      child: SizedBox(
+        height: boardHeight,
+        child: Row(
+          mainAxisAlignment: horizontalAlignment,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _generateDragAndDropListInnerContents(params),
+        ),
       ),
     );
     if (params.axis == Axis.horizontal) {
@@ -141,7 +147,6 @@ class DragAndDropList implements DragAndDropListInterface {
       contents.add(
         Expanded(
           child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: verticalAlignment,
               mainAxisSize: MainAxisSize.max,
@@ -154,7 +159,6 @@ class DragAndDropList implements DragAndDropListInterface {
       contents.add(
         Expanded(
           child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

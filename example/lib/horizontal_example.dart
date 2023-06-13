@@ -1,5 +1,5 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:example/navigation_drawer.dart';
+import 'package:example/custom_navigation_drawer.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalExample extends StatefulWidget {
@@ -36,25 +36,19 @@ class _HorizontalExample extends State<HorizontalExample> {
       appBar: AppBar(
         title: const Text('Horizontal'),
       ),
-      drawer: const NavigationDrawer(),
+      drawer: const CustomNavigationDrawer(),
       body: DragAndDropLists(
         children: List.generate(_lists.length, (index) => _buildList(index)),
         onItemReorder: _onItemReorder,
         onListReorder: _onListReorder,
         axis: Axis.horizontal,
-        listWidth: 150,
-        listDraggingWidth: 150,
+        listWidth: 279,
+        listDraggingWidth: 279,
+        itemDragOnLongPress: false,
         listDecoration: BoxDecoration(
           color: Colors.grey[200],
+          border: Border.all(),
           borderRadius: const BorderRadius.all(Radius.circular(7.0)),
-          boxShadow: const <BoxShadow>[
-            BoxShadow(
-              color: Colors.black45,
-              spreadRadius: 3.0,
-              blurRadius: 6.0,
-              offset: Offset(2, 3),
-            ),
-          ],
         ),
         listPadding: const EdgeInsets.all(8.0),
       ),
@@ -64,6 +58,7 @@ class _HorizontalExample extends State<HorizontalExample> {
   _buildList(int outerIndex) {
     var innerList = _lists[outerIndex];
     return DragAndDropList(
+      boardHeight: 517,
       header: Row(
         children: <Widget>[
           Expanded(
@@ -75,7 +70,7 @@ class _HorizontalExample extends State<HorizontalExample> {
               padding: const EdgeInsets.all(10),
               child: Text(
                 'Header ${innerList.name}',
-                style: Theme.of(context).primaryTextTheme.headline6,
+                style: Theme.of(context).primaryTextTheme.titleLarge,
               ),
             ),
           ),
@@ -93,21 +88,11 @@ class _HorizontalExample extends State<HorizontalExample> {
               padding: const EdgeInsets.all(10),
               child: Text(
                 'Footer ${innerList.name}',
-                style: Theme.of(context).primaryTextTheme.headline6,
+                style: Theme.of(context).primaryTextTheme.titleLarge,
               ),
             ),
           ),
         ],
-      ),
-      leftSide: const VerticalDivider(
-        color: Colors.pink,
-        width: 1.5,
-        thickness: 1.5,
-      ),
-      rightSide: const VerticalDivider(
-        color: Colors.pink,
-        width: 1.5,
-        thickness: 1.5,
       ),
       children: List.generate(innerList.children.length,
           (index) => _buildItem(innerList.children[index])),

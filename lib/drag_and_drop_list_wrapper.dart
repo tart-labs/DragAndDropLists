@@ -88,18 +88,7 @@ class _DragAndDropListWrapper extends State<DragAndDropListWrapper>
           ),
         );
       } else if (widget.parameters.dragOnLongPress) {
-        draggable = LongPressDraggable<DragAndDropListInterface>(
-          data: widget.dragAndDropList,
-          axis: draggableAxis(),
-          child: dragAndDropListContents,
-          feedback:
-              buildFeedbackWithoutHandle(context, dragAndDropListContents),
-          childWhenDragging: Container(),
-          onDragStarted: () => _setDragging(true),
-          onDragCompleted: () => _setDragging(false),
-          onDraggableCanceled: (_, __) => _setDragging(false),
-          onDragEnd: (_) => _setDragging(false),
-        );
+        draggable = dragAndDropListContents;
       } else {
         draggable = Draggable<DragAndDropListInterface>(
           data: widget.dragAndDropList,
@@ -206,14 +195,6 @@ class _DragAndDropListWrapper extends State<DragAndDropListWrapper>
       toReturn = Padding(
         padding: widget.parameters.listPadding!,
         child: stack,
-      );
-    }
-    if (widget.parameters.axis == Axis.horizontal &&
-        !widget.parameters.disableScrolling) {
-      toReturn = SingleChildScrollView(
-        child: Container(
-          child: toReturn,
-        ),
       );
     }
 

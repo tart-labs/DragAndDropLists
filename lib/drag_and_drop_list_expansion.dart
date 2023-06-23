@@ -16,6 +16,7 @@ class DragAndDropListExpansion implements DragAndDropListExpansionInterface {
   final Widget? subtitle;
   final Widget? trailing;
   final Widget? leading;
+  final Widget? emptyState;
   final bool initiallyExpanded;
 
   /// Set this to a unique key that will remain unchanged over the lifetime of the list.
@@ -47,6 +48,7 @@ class DragAndDropListExpansion implements DragAndDropListExpansionInterface {
     this.subtitle,
     this.trailing,
     this.leading,
+    this.emptyState,
     this.initiallyExpanded = false,
     this.backgroundColor,
     this.onExpansionChanged,
@@ -147,15 +149,7 @@ class DragAndDropListExpansion implements DragAndDropListExpansionInterface {
             ),
       ));
     } else {
-      contents.add(
-        contentsWhenEmpty ??
-            Text(
-              'Empty list',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-      );
+      contents.add(contentsWhenEmpty ?? emptyState!);
       contents.add(
         DragAndDropItemTarget(
           parent: this,

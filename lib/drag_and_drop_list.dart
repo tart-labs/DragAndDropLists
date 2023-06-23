@@ -47,6 +47,7 @@ class DragAndDropList implements DragAndDropListInterface {
   /// Set to true if it can be reordered.
   /// Set to false if it must remain fixed.
   final bool canDrag;
+  final Widget? emptyState;
 
   ///set board height
   final double? boardHeight;
@@ -55,6 +56,7 @@ class DragAndDropList implements DragAndDropListInterface {
     this.header,
     this.footer,
     this.leftSide,
+    this.emptyState,
     this.rightSide,
     this.contentsWhenEmpty,
     this.lastTarget,
@@ -162,13 +164,7 @@ class DragAndDropList implements DragAndDropListInterface {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                contentsWhenEmpty ??
-                    Text(
-                      'Empty list',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
+                contentsWhenEmpty ?? emptyState!,
                 DragAndDropItemTarget(
                   parent: this,
                   parameters: parameters,

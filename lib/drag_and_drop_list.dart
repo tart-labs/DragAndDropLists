@@ -164,7 +164,7 @@ class DragAndDropList implements DragAndDropListInterface {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                contentsWhenEmpty ?? emptyState!,
+                emptyState!,
                 DragAndDropItemTarget(
                   parent: this,
                   parameters: parameters,

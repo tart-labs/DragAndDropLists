@@ -496,6 +496,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
     Widget _listView = ListView(
       scrollDirection: Axis.horizontal,
       controller: _scrollController,
+      shrinkWrap: true,
       children: _buildOuterList(dragAndDropListTarget, parameters),
     );
 
@@ -540,6 +541,7 @@ class DragAndDropListsState extends State<DragAndDropLists> {
       return widget.listDivider!;
     } else {
       return DragAndDropListWrapper(
+        
         dragAndDropList:
             widget.children[(includeSeparators ? index / 2 : index).toInt()],
         parameters: parameters,

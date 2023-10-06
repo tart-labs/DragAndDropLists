@@ -53,26 +53,29 @@ class DragAndDropList implements DragAndDropListInterface {
   final BasePagination? pagination;
   final bool isPaginationLoading;
   final ScrollController? controller;
+  final Function(int)? onPageChange;
 
   ///set board height
   final double? boardHeight;
-  DragAndDropList(
-      {required this.children,
-      this.header,
-      this.footer,
-      this.leftSide,
-      this.emptyState,
-      this.rightSide,
-      this.contentsWhenEmpty,
-      this.lastTarget,
-      this.decoration,
-      this.boardHeight,
-      this.horizontalAlignment = MainAxisAlignment.start,
-      this.verticalAlignment = CrossAxisAlignment.start,
-      this.canDrag = true,
-      this.pagination,
-      this.isPaginationLoading = false,
-      this.controller});
+  DragAndDropList({
+    required this.children,
+    this.header,
+    this.footer,
+    this.leftSide,
+    this.emptyState,
+    this.rightSide,
+    this.contentsWhenEmpty,
+    this.lastTarget,
+    this.decoration,
+    this.boardHeight,
+    this.horizontalAlignment = MainAxisAlignment.start,
+    this.verticalAlignment = CrossAxisAlignment.start,
+    this.canDrag = true,
+    this.pagination,
+    this.isPaginationLoading = false,
+    this.controller,
+    this.onPageChange,
+  });
 
   @override
   Widget generateWidget(DragAndDropBuilderParameters params) {
@@ -164,8 +167,10 @@ class DragAndDropList implements DragAndDropListInterface {
                       showShadow: false,
                       pagination: pagination,
                       isLoading: isPaginationLoading,
+                      onPageChange: onPageChange,
                       listWidget: (context, isLastPage, itemCount) {
                         return SingleChildScrollView(
+                          controller: controller,
                           child: Column(
                             children: [
                               ...allChildren,

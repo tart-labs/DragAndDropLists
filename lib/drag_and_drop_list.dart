@@ -3,6 +3,8 @@ import 'package:drag_and_drop_lists/drag_and_drop_item.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_item_target.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_item_wrapper.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
+import 'package:drag_and_drop_lists/mobile_pagination/base_pagiantion.dart';
+import 'package:drag_and_drop_lists/mobile_pagination/mobile_pagination_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -48,6 +50,8 @@ class DragAndDropList implements DragAndDropListInterface {
   /// Set to false if it must remain fixed.
   final bool canDrag;
   final Widget? emptyState;
+  final BasePagination? pagination;
+  final bool isPaginationLoading;
 
   ///set board height
   final double? boardHeight;
@@ -65,6 +69,8 @@ class DragAndDropList implements DragAndDropListInterface {
     this.horizontalAlignment = MainAxisAlignment.start,
     this.verticalAlignment = CrossAxisAlignment.start,
     this.canDrag = true,
+    this.pagination,
+    this.isPaginationLoading = false,
   });
 
   @override
@@ -150,10 +156,26 @@ class DragAndDropList implements DragAndDropListInterface {
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: verticalAlignment,
-              mainAxisSize: MainAxisSize.max,
-              children: allChildren,
-            ),
+                crossAxisAlignment: verticalAlignment,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  MobilePaginationBuilder(
+                      pagination: pagination,
+                      isLoading: isPaginationLoading,
+                      listWidget: (context, isLastPage, itemCount) {
+                        return ListView.builder(itemBuilder: ((context, index) {
+                          if (!isLastPage && itemCount == index + 1) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Column(
+                            children: allChildren,
+                          );
+                        }));
+                      },
+                      itemCount: allChildren.length)
+                ]),
           ),
         ),
       );

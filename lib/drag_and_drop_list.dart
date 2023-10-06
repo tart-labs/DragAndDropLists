@@ -161,24 +161,24 @@ class DragAndDropList implements DragAndDropListInterface {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   MobilePaginationBuilder(
+                      showShadow: false,
                       pagination: pagination,
                       isLoading: isPaginationLoading,
                       listWidget: (context, isLastPage, itemCount) {
-                        return ListView.builder(
-                            controller: controller,
-                            itemCount: itemCount,
-                            shrinkWrap: true,
-                            itemBuilder: ((context, index) {
-                              return Column(
-                                children: [
-                                  ...allChildren,
-                                  if (isPaginationLoading)
-                                    const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                ],
-                              );
-                            }));
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ...allChildren,
+                              if (!isLastPage)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                            ],
+                          ),
+                        );
                       },
                       itemCount: allChildren.length)
                 ]),

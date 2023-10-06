@@ -166,16 +166,17 @@ class DragAndDropList implements DragAndDropListInterface {
                       listWidget: (context, isLastPage, itemCount) {
                         return ListView.builder(
                             controller: controller,
-                            itemCount: allChildren.length,
+                            itemCount: itemCount,
                             shrinkWrap: true,
                             itemBuilder: ((context, index) {
-                              if (!isLastPage && itemCount == index + 1) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
                               return Column(
-                                children: allChildren,
+                                children: [
+                                  ...allChildren,
+                                  if (isPaginationLoading)
+                                    const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                ],
                               );
                             }));
                       },

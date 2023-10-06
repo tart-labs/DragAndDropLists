@@ -52,26 +52,27 @@ class DragAndDropList implements DragAndDropListInterface {
   final Widget? emptyState;
   final BasePagination? pagination;
   final bool isPaginationLoading;
+  final ScrollController? controller;
 
   ///set board height
   final double? boardHeight;
-  DragAndDropList({
-    required this.children,
-    this.header,
-    this.footer,
-    this.leftSide,
-    this.emptyState,
-    this.rightSide,
-    this.contentsWhenEmpty,
-    this.lastTarget,
-    this.decoration,
-    this.boardHeight,
-    this.horizontalAlignment = MainAxisAlignment.start,
-    this.verticalAlignment = CrossAxisAlignment.start,
-    this.canDrag = true,
-    this.pagination,
-    this.isPaginationLoading = false,
-  });
+  DragAndDropList(
+      {required this.children,
+      this.header,
+      this.footer,
+      this.leftSide,
+      this.emptyState,
+      this.rightSide,
+      this.contentsWhenEmpty,
+      this.lastTarget,
+      this.decoration,
+      this.boardHeight,
+      this.horizontalAlignment = MainAxisAlignment.start,
+      this.verticalAlignment = CrossAxisAlignment.start,
+      this.canDrag = true,
+      this.pagination,
+      this.isPaginationLoading = false,
+      this.controller});
 
   @override
   Widget generateWidget(DragAndDropBuilderParameters params) {
@@ -164,6 +165,7 @@ class DragAndDropList implements DragAndDropListInterface {
                       isLoading: isPaginationLoading,
                       listWidget: (context, isLastPage, itemCount) {
                         return ListView.builder(
+                            controller: controller,
                             itemCount: allChildren.length,
                             shrinkWrap: true,
                             itemBuilder: ((context, index) {

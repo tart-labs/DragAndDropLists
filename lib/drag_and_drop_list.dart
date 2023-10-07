@@ -6,7 +6,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
 import 'package:drag_and_drop_lists/mobile_pagination/base_pagiantion.dart';
 import 'package:drag_and_drop_lists/mobile_pagination/mobile_pagination_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DragAndDropList implements DragAndDropListInterface {
   /// The widget that is displayed at the top of the list.
@@ -50,7 +49,7 @@ class DragAndDropList implements DragAndDropListInterface {
   /// Set to false if it must remain fixed.
   final bool canDrag;
   final Widget? emptyState;
-  final BasePagination? pagination;
+  final PipelineBasePagination? pagination;
   final bool isPaginationLoading;
   final ScrollController? controller;
   final Function(int)? onPageChange;
@@ -159,30 +158,28 @@ class DragAndDropList implements DragAndDropListInterface {
       contents.add(
         Expanded(
           child: SingleChildScrollView(
+            controller: controller,
             child: Column(
                 crossAxisAlignment: verticalAlignment,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  MobilePaginationBuilder(
-                      showShadow: false,
+                  MobilePagination(
+                      scrollController: controller!,
                       pagination: pagination,
                       isLoading: isPaginationLoading,
-                      onPageChange: onPageChange,
+                      onPageChange: (_) => onPageChange,
                       listWidget: (context, isLastPage, itemCount) {
-                        return SingleChildScrollView(
-                          controller: controller,
-                          child: Column(
-                            children: [
-                              ...allChildren,
-                              if (!isLastPage)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                            ],
-                          ),
+                        return Column(
+                          children: [
+                            ...allChildren,
+                            if (!isLastPage)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                          ],
                         );
                       },
                       itemCount: allChildren.length)

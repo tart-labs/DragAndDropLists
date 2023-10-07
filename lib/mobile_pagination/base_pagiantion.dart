@@ -1,14 +1,14 @@
 
 import 'package:drag_and_drop_lists/mobile_pagination/base_equatable.dart';
 
-class BasePagination extends BaseEquatable {
+class PipelineBasePagination extends BaseEquatable {
   final int currentPage;
   final int? from;
   final int lastPage;
   final int perPage;
   final int? to;
   final int? total;
-  BasePagination({
+  PipelineBasePagination({
     required this.currentPage,
     this.from,
     required this.lastPage,

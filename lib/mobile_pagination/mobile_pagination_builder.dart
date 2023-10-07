@@ -2,21 +2,24 @@ import 'package:drag_and_drop_lists/mobile_pagination/base_pagiantion.dart';
 import 'package:drag_and_drop_lists/mobile_pagination/debouncer.dart';
 import 'package:flutter/material.dart';
 
-class MobilePaginationBuilder extends StatefulWidget {
-  final BasePagination? pagination;
+class MobilePagination extends StatefulWidget {
+  final ScrollController scrollController;
+  final PipelineBasePagination? pagination;
   final bool isLoading;
+  final bool showLoader;
+
   final double? height;
-  final bool? showShadow;
   final void Function(int)? onPageChange;
-  final dynamic Function(BuildContext, bool isLastPage, int itemCount)
+  final Widget Function(BuildContext, bool isLastPage, int itemCount)
       listWidget;
   final int itemCount;
 
-  const MobilePaginationBuilder({
+  const MobilePagination({
     super.key,
-    this.showShadow,
+    required this.scrollController,
     required this.pagination,
     required this.isLoading,
+    this.showLoader = true,
     this.onPageChange,
     this.height,
     required this.listWidget,
@@ -24,20 +27,36 @@ class MobilePaginationBuilder extends StatefulWidget {
   }) : itemCount = itemCount ?? 0;
 
   @override
-  State<MobilePaginationBuilder> createState() =>
-      _MobilePaginationBuilderState();
+  State<MobilePagination> createState() => _PaginationBuilderState();
 }
 
-class _MobilePaginationBuilderState extends State<MobilePaginationBuilder> {
-  final debouncer = Debouncer(delay: const Duration(milliseconds: 500));
+class _PaginationBuilderState extends State<MobilePagination> {
+  final debouncer = Debouncer();
 
   @override
   void initState() {
     super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final maxScroll = widget.scrollController.position.maxScrollExtent;
+    final currentScroll = widget.scrollController.position.pixels;
+
+    if (maxScroll - currentScroll <= 200) {
+      if (!widget.isLoading && !(widget.pagination?.isLastPage ?? true)) {
+        debouncer.debounce(() {
+          widget.onPageChange?.call((widget.pagination?.currentPage ?? 0) + 1);
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.showLoader) {
+      return Container();
+    }
     if (widget.isLoading && widget.pagination == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -46,51 +65,17 @@ class _MobilePaginationBuilderState extends State<MobilePaginationBuilder> {
 
     return SizedBox(
       height: widget.height,
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scrollInfo) {
-          if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            if (!widget.isLoading && !isLastPage) {
-              debouncer.debounce(() {
-                widget.onPageChange
-                    ?.call((widget.pagination?.currentPage ?? 0) + 1);
-              });
-            }
-          }
-          return false;
-        },
-        child: widget.showShadow ?? true
-            ? ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white,
-                      Colors.transparent,
-                      Colors.transparent,
-                      Colors.white
-                    ],
-                    stops: [0.0, 0.1, 0.9, 1.0],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: widget.listWidget(
-                  context,
-                  isLastPage,
-                  widget.itemCount + (isLastPage ? 0 : 1),
-                ),
-              )
-            : widget.listWidget(
-                context,
-                isLastPage,
-                widget.itemCount + (isLastPage ? 0 : 1),
-              ),
+      child: widget.listWidget(
+        context,
+        isLastPage,
+        widget.itemCount + (isLastPage ? 0 : 1),
       ),
     );
   }
 
   @override
   void dispose() {
+    widget.scrollController.removeListener(_onScroll);
     super.dispose();
   }
 }

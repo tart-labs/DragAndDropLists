@@ -167,7 +167,7 @@ class DragAndDropList implements DragAndDropListInterface {
                       scrollController: controller!,
                       pagination: pagination,
                       isLoading: isPaginationLoading,
-                      onPageChange: (_) => onPageChange,
+                      onPageChange: onPageChange,
                       listWidget: (context, isLastPage, itemCount) {
                         return Column(
                           children: [
